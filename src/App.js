@@ -7,35 +7,28 @@ import {
   Navigate
 } from "react-router-dom";
 
+import { useAuth } from './hooks/useAuth';
+import AuthProvider from './contexts/AuthContext';
+
 import Login from "./pages/Login";
 import Repository from "./pages/Repository";
 
-function ProtectRoute({ component: Component, ...rest }) {
-  return (
-    <Route
-      {...rest}
-      element={props =>
-        true ? (
-          <Component {...props} />
-        ) : (
-          <Navigate to="/" />
-        )
-      }
-    />
-  );
+function PrivateRoute({ component: Component }) {
+  const { isAuthenticated } = useAuth();
+  console.log(isAuthenticated);
+  return isAuthenticated ? Component : <Navigate to="/" />;
 }
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-
-        {/* <ProtectRoute>
-          <Route path="repository" element={<Repository />} />
-        </ProtectRoute> */}
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/repository" element={<PrivateRoute component={<Repository />} />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
