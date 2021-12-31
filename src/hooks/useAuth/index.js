@@ -24,6 +24,11 @@ export function useAuthProvider() {
         }
     }
 
+    const logout = () => {
+        setIsAuthenticated(false);
+        localStorage.removeItem('token');
+    }
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -36,6 +41,7 @@ export function useAuthProvider() {
         isAuthenticated,
         setIsAuthenticated,
         login,
+        logout,
         token
     };
 }
